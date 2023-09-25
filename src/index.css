@@ -29,3 +29,14 @@ code {
 .post-list-item-title {
   margin-top: 0;
 }
+.post-list-img {
+  width: 250px;
+}
+
+.post-list-item-bage {
+  display: block;
+  padding: 8px;
+  font-size: 12px;
+  background-color: tomato;
+  color: white;
+}

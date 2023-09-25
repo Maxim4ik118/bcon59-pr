@@ -1,13 +1,32 @@
+import imgCat from '../assets/images/cat-1.jpg'
+import { PostListItem } from './PostListItem';
+
 const Postlist = ({ title, list }) => {
   return (
     <div>
       <h2 className="post-list-title">{title}</h2>
       <ul className="post-list">
-        <li className="post-list-item">
-          <img className="post-list-img" src="" alt="" />
-          <h4 className="post-list-item-title">Post title</h4>
-          <p className="post-list-item-text">Post text</p>
-        </li>
+        {list.map((post) => {
+          return (
+            <PostListItem key={post.id}
+              srcImage={post.srcImage}
+              title={post.title}
+              content={post.content}
+              isPopular={post.isPopular}
+            />
+          );
+        })}
+        {/* <PostListItem
+          srcImage={imgCat}
+          title={'Image of Cat'}
+          content={'Hello Cat'}
+        />
+        <PostListItem
+          isPopular={true}
+          srcImage={imgCat}
+          title={'Image of Cat Two'}
+          content={'Hello Cat Two'}
+        /> */}
       </ul>
     </div>
   );
