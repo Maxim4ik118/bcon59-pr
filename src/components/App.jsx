@@ -1,16 +1,10 @@
+import PostList from './PostList';
+
 export const App = () => {
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <>
+      <h2 className="header-title">Котик на дієті, нещасний котик</h2>
+      <PostList title="My Post List" />
+    </>
   );
 };
