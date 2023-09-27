@@ -13,8 +13,30 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.header-title {
+  font-size: 24px;
+  color: brown;
+  text-align: center;
+}
+.post-list {
+  list-style: none;
+  padding: 0;
+}
+.post-list-item {
+  border: 1px solid brown;
+  padding: 25px;
+}
+.post-list-item-title {
+  margin-top: 0;
+}
+.post-list-img {
+  width: 250px;
+}
 
-.link {
-  text-decoration: none;
-  color: inherit;
+.post-list-item-bage {
+  display: block;
+  padding: 8px;
+  font-size: 12px;
+  background-color: tomato;
+  color: white;
 }
