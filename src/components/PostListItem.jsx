@@ -15,7 +15,7 @@ export function PostListItem({
       <h4 className="post-list-item-title">{title}</h4>
       <p className="post-list-item-text">{content}</p>
       <button onClick={() => onDeletePost(id)} type="button">
-        Click
+        delete
       </button>
     </li>
   );
