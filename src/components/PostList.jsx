@@ -1,10 +1,16 @@
-import imgCat from '../assets/images/cat-1.jpg';
 import { PostListItem } from './PostListItem';
 
-const Postlist = ({ title, list, onDeletePost, addPopularStatus }) => {
+const Postlist = ({ title, filter, list, onDeletePost, addPopularStatus }) => {
   return (
     <div>
       <h2 className="post-list-title">{title}</h2>
+      {list.length === 0 && filter.length === 0 && (
+        <h3>There are no added posts yet!</h3>
+      )}
+      {list.length === 0 && filter.length > 0 && (
+        <h3>There are no added posts with this search keyword "{filter}" yet!</h3>
+      )}
+
       <ul className="post-list">
         {list.map(post => {
           return (
@@ -20,17 +26,6 @@ const Postlist = ({ title, list, onDeletePost, addPopularStatus }) => {
             />
           );
         })}
-        {/* <PostListItem
-          srcImage={imgCat}
-          title={'Image of Cat'}
-          content={'Hello Cat'}
-        />
-        <PostListItem
-          isPopular={true}
-          srcImage={imgCat}
-          title={'Image of Cat Two'}
-          content={'Hello Cat Two'}
-        /> */}
       </ul>
     </div>
   );

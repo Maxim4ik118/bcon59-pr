@@ -64,7 +64,7 @@ export class App extends Component {
   };
 
   onAddPost = formData => {
-    const post = { ...formData, id: Math.random(), srcImage: imgCat };
+    const post = { ...formData, id: Math.random(), srcImage: imgCat, isPopular: false };
 
     this.setState({ posts: [...this.state.posts, post] });
   };
@@ -87,8 +87,6 @@ export class App extends Component {
     });
     const sortedFilteredPosts = [...filteredPostsByTitleAndContent].sort(
       (a, b) => {
-        console.log(a);
-        console.log(b);
         return Number(b.isPopular) - Number(a.isPopular);
       }
     );
@@ -104,12 +102,13 @@ export class App extends Component {
             type="text"
           />
         </div>
-        {this.state.posts.length === 0 ? (
+        {/* {this.state.posts.length === 0 ? (
           <p>There are no added posts yet</p>
-        ) : null}
+        ) : null} */}
         <PostList
           title="My Post List"
           list={sortedFilteredPosts}
+          filter={this.state.filter}
           onDeletePost={this.onDeletePost}
           addPopularStatus={this.addPopularStatus}
         />
