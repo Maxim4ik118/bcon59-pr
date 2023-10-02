@@ -6,6 +6,7 @@ export function PostListItem({
   onDeletePost,
   addPopularStatus,
   id,
+  onOpenModal
 }) {
   return (
     <li className="post-list-item">
@@ -20,6 +21,9 @@ export function PostListItem({
       </button>
       <button onClick={() => addPopularStatus(id)} type="button">
         Add popular status
+      </button>
+      <button onClick={() => onOpenModal(title)}  >
+        Open modal with details
       </button>
     </li>
   );

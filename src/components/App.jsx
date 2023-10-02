@@ -1,13 +1,19 @@
 import PostList from './PostList';
+
 import imgCat from '../assets/images/cat-1.jpg';
 import imgDog from '../assets/images/dog-1.jpg';
 import imgFish from '../assets/images/fish-1.webp';
 import { Component } from 'react';
 import { PostForm } from 'components/PostForm/PostForm';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
     filter: '',
+    modal: {
+      isOpen: false,
+      modalData: null,
+    },
     posts: [
       {
         id: 1,
@@ -74,6 +80,28 @@ export class App extends Component {
     this.setState({ filter: inputValue });
   };
 
+
+  onOpenModal = (modalData) => {
+    this.setState({
+      modal: {
+        isOpen: true,
+        modalData: modalData
+      }
+    })
+  }
+  onCloseModal = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
+        modaltData: null
+      }
+    })
+  }
+
+
+
+
+
   render() {
     const filteredPostsByTitleAndContent = this.state.posts.filter(post => {
       return (
@@ -111,7 +139,20 @@ export class App extends Component {
           filter={this.state.filter}
           onDeletePost={this.onDeletePost}
           addPopularStatus={this.addPopularStatus}
+          onOpenModal={this.onOpenModal}
         />
+
+        {
+          this.state.modal.isOpen === true &&
+          <Modal
+            data={'Hello from modal'}
+            onCloseModal={this.onCloseModal}
+          />
+        }
+
+
+
+
       </>
     );
   }

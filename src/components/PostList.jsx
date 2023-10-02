@@ -1,6 +1,6 @@
 import { PostListItem } from './PostListItem';
 
-const Postlist = ({ title, filter, list, onDeletePost, addPopularStatus }) => {
+const Postlist = ({ title, filter, list, onDeletePost, addPopularStatus, onOpenModal }) => {
   return (
     <div>
       <h2 className="post-list-title">{title}</h2>
@@ -23,6 +23,7 @@ const Postlist = ({ title, filter, list, onDeletePost, addPopularStatus }) => {
               onDeletePost={onDeletePost}
               addPopularStatus={addPopularStatus}
               id={post.id}
+              onOpenModal={onOpenModal}
             />
           );
         })}
