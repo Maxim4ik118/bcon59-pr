@@ -104,6 +104,9 @@ export class App extends Component {
             type="text"
           />
         </div>
+        {this.state.posts.length === 0 ? (
+          <p>There are no added posts yet</p>
+        ) : null}
         <PostList
           title="My Post List"
           list={sortedFilteredPosts}
