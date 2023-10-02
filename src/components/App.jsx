@@ -33,6 +33,19 @@ export class App extends Component {
     ],
   };
 
+  componentDidMount() {
+    const stringifiedPosts = localStorage.getItem('keyPost');
+    const parsedPosts = JSON.parse(stringifiedPosts) ?? [];
+    this.setState({ posts: parsedPosts });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.posts !== prevState.posts) {
+      const stringifiedPosts = JSON.stringify(this.state.posts);
+      localStorage.setItem('keyPost', stringifiedPosts);
+    }
+  }
+
   onDeletePost = postId => {
     this.setState({
       posts: this.state.posts.filter(post => post.id !== postId),
