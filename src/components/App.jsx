@@ -1,11 +1,19 @@
 import PostList from './PostList';
-
-import imgCat from '../assets/images/cat-1.jpg';
-import imgDog from '../assets/images/dog-1.jpg';
-import imgFish from '../assets/images/fish-1.webp';
+// import imgCat from '../assets/images/cat-1.jpg';
+// import imgDog from '../assets/images/dog-1.jpg';
+// import imgFish from '../assets/images/fish-1.webp';
 import { Component } from 'react';
 import { PostForm } from 'components/PostForm/PostForm';
 import { Modal } from './Modal/Modal';
+import { requestPosts } from 'services/api';
+import { ColorRing } from 'react-loader-spinner';
+
+// {
+//     "userId": 1,
+//     "id": 1,
+//     "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+//     "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+//   },
 
 export class App extends Component {
   state = {
@@ -14,42 +22,26 @@ export class App extends Component {
       isOpen: false,
       modalData: null,
     },
-    posts: [
-      {
-        id: 1,
-        srcImage: imgCat,
-        title: 'Cat',
-        content: 'Sad',
-        isPopular: false,
-      },
-      {
-        id: 2,
-        srcImage: imgDog,
-        title: 'Dog',
-        content: 'Happy',
-        isPopular: false,
-      },
-      {
-        id: 3,
-        srcImage: imgFish,
-        title: 'Fish',
-        content: 'Wet',
-        isPopular: true,
-      },
-    ],
+    posts: [],
+    isLoading: false,
+    error: null,
+  };
+
+  fetchPost = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const posts = await requestPosts();
+      console.log(posts);
+      this.setState({ posts: posts });
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   componentDidMount() {
-    const stringifiedPosts = localStorage.getItem('keyPost');
-    const parsedPosts = JSON.parse(stringifiedPosts) ?? [];
-    this.setState({ posts: parsedPosts });
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (this.state.posts !== prevState.posts) {
-      const stringifiedPosts = JSON.stringify(this.state.posts);
-      localStorage.setItem('keyPost', stringifiedPosts);
-    }
+    this.fetchPost();
   }
 
   onDeletePost = postId => {
@@ -58,66 +50,40 @@ export class App extends Component {
     });
   };
 
-  addPopularStatus = postId => {
-    // postId = 2
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: false}]
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: true}]
-    this.setState({
-      posts: this.state.posts.map(post =>
-        postId === post.id ? { ...post, isPopular: !post.isPopular } : post
-      ),
-    });
-  };
-
-  onAddPost = formData => {
-    const post = { ...formData, id: Math.random(), srcImage: imgCat, isPopular: false };
-
-    this.setState({ posts: [...this.state.posts, post] });
-  };
-
   onFilterChange = event => {
     const inputValue = event.target.value;
     this.setState({ filter: inputValue });
   };
 
-
-  onOpenModal = (modalData) => {
+  onOpenModal = modalData => {
     this.setState({
       modal: {
         isOpen: true,
-        modalData: modalData
-      }
-    })
-  }
+        modalData: modalData,
+      },
+    });
+  };
   onCloseModal = () => {
     this.setState({
       modal: {
         isOpen: false,
-        modaltData: null
-      }
-    })
-  }
-
-
-
-
+        modaltData: null,
+      },
+    });
+  };
 
   render() {
-    const filteredPostsByTitleAndContent = this.state.posts.filter(post => {
-      return (
-        post.title
-          .toLowerCase()
-          .includes(this.state.filter.trim().toLowerCase()) ||
-        post.content
-          .toLowerCase()
-          .includes(this.state.filter.trim().toLowerCase())
-      );
-    });
-    const sortedFilteredPosts = [...filteredPostsByTitleAndContent].sort(
-      (a, b) => {
-        return Number(b.isPopular) - Number(a.isPopular);
-      }
-    );
+    // const filteredPostsByTitleAndContent = this.state.posts.filter(post => {
+    //   return (
+    //     post.title
+    //       .toLowerCase()
+    //       .includes(this.state.filter.trim().toLowerCase()) ||
+    //     post.content
+    //       .toLowerCase()
+    //       .includes(this.state.filter.trim().toLowerCase())
+    //   );
+    // });
+
     return (
       <>
         <h2 className="header-title">Котик на дієті, нещасний котик</h2>
@@ -133,26 +99,30 @@ export class App extends Component {
         {/* {this.state.posts.length === 0 ? (
           <p>There are no added posts yet</p>
         ) : null} */}
+        {this.state.isLoading ? (
+          <ColorRing
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+          />
+        ) : null}
+        {this.state.error ? (
+          <p className="error-txt">Error: {this.state.error}</p>
+        ) : null}
         <PostList
           title="My Post List"
-          list={sortedFilteredPosts}
+          list={this.state.posts}
           filter={this.state.filter}
           onDeletePost={this.onDeletePost}
-          addPopularStatus={this.addPopularStatus}
           onOpenModal={this.onOpenModal}
         />
-
-        {
-          this.state.modal.isOpen === true &&
-          <Modal
-            data={'Hello from modal'}
-            onCloseModal={this.onCloseModal}
-          />
-        }
-
-
-
-
+        {this.state.modal.isOpen === true && (
+          <Modal data={'Hello from modal'} onCloseModal={this.onCloseModal} />
+        )}
       </>
     );
   }

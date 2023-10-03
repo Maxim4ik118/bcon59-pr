@@ -1,28 +1,20 @@
 export function PostListItem({
-  srcImage,
-  title,
-  content,
-  isPopular = false,
-  onDeletePost,
-  addPopularStatus,
+  userId,
   id,
-  onOpenModal
+  body,
+  title,
+  onDeletePost,
+  onOpenModal,
 }) {
   return (
     <li className="post-list-item">
-      {isPopular ? (
-        <span className="post-list-item-bage">Popular rated</span>
-      ) : null}
-      <img className="post-list-img" src={srcImage} alt={title} />
+      <p>User id:{userId}</p>
       <h4 className="post-list-item-title">{title}</h4>
-      <p className="post-list-item-text">{content}</p>
+      <p className="post-list-item-text">{body}</p>
       <button onClick={() => onDeletePost(id)} type="button">
         delete
       </button>
-      <button onClick={() => addPopularStatus(id)} type="button">
-        Add popular status
-      </button>
-      <button onClick={() => onOpenModal(title)}  >
+      <button onClick={() => onOpenModal(title)}>
         Open modal with details
       </button>
     </li>
