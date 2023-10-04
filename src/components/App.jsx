@@ -28,9 +28,7 @@ export const App = () => {
   };
 
   const addPopularStatus = postId => {
-    // postId = 2
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: false}]
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: true}]
+
 
     setPosts(prevPosts =>
       posts.map(post =>
