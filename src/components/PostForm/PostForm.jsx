@@ -1,49 +1,68 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 
-export class PostForm extends Component {
-  state = {
-    title: '',
-    content: '',
+import React from 'react';
+
+export const PostForm = ({ title:propsTitle, onAddPost }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const onInputChange = event => {
+    switch (event.target.name) {
+      case 'title':
+        setTitle(event.target.value);
+        break;
+      case 'content':
+        setContent(event.target.value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  onInputChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+  // const [formData, setFormData] = useState({ title: '', content: '' });
+  // const onInputChange = event => {
+  //   setFormData({ ...formData, [event.target.name]: event.target.value });
+  // };
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.props.onAddPost(this.state);
-    this.setState({
-      title: '',
-      content: '',
-    });
+    onAddPost({ title, content });
+    setTitle('');
+    setContent('');
   };
+  // const handleSubmit = event => {
+  //   event.preventDefault();
+  //   onAddPost(formData);
+  //   setFormData({ title: '', content: '' });
+  // };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <h2> {this.props.title}</h2>
-        {this.state.title === 'halyava' && <p>Discount promocode: #2281337</p>}
-        <label>
-          <span> Title: </span>
-          <input
-            onChange={this.onInputChange}
-            type="text"
-            name="title"
-            value={this.state.title}
-          />
-        </label>
-        <label>
-          <span> Content: </span>
-          <input
-            onChange={this.onInputChange}
-            type="text"
-            name="content"
-            value={this.state.content}
-          />
-        </label>
-        <button type="submit">add post</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2> {propsTitle}</h2>
+      {/* {formData.title === 'halyava' && <p>Discount promocode: #2281337</p>} */}
+      {title === 'halyava' && <p>Discount promocode: #2281337</p>}
+      <label>
+        <span> Title: </span>
+        <input
+          onChange={onInputChange}
+          type="text"
+          name="title"
+          // value={formData.title}
+          value={title}
+        />
+      </label>
+      <label>
+        <span> Content: </span>
+        <input
+          onChange={onInputChange}
+          type="text"
+          name="content"
+          // value={formData.content}
+          value={content}
+        />
+      </label>
+      <button type="submit">add post</button>
+    </form>
+  );
+};
