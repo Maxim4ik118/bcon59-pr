@@ -1,31 +1,40 @@
-import { Component } from "react";
+import { useEffect } from 'react';
 import style from './Modal.module.css';
 
+import React from 'react';
+
+export const Modal = ({data, onCloseModal}) => {
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.code === 'Escape') {
+        onCloseModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onCloseModal]);
 
 
-export class Modal extends Component {
 
-  handleOverlayClick = (event) => {
+  const handleOverlayClick = event => {
     if (event.target === event.currentTarget) {
-      this.props.onCloseModal()
+      onCloseModal();
     }
-  }
-  render() {
-    return (
-      <div className={style.overlay}
-        onClick={this.handleOverlayClick}>
-        <div className={style.modal} >
-          <div>
-            {this.props.data}
-          </div>
-          <button
-            className={style.closeModalBtn}
-            onClick={this.props.onCloseModal}
-          >
-            &times;
-          </button>
-        </div>
+  };
+
+  return (
+    <div className={style.overlay} onClick={handleOverlayClick}>
+      <div className={style.modal}>
+        <div>{data}</div>
+        <button
+          className={style.closeModalBtn}
+          onClick={onCloseModal}
+        >
+          &times;
+        </button>
       </div>
-    )
-  }
-}
+    </div>
+  );
+};
