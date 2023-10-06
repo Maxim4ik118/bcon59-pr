@@ -1,58 +1,78 @@
 import PostList from './PostList';
 import imgCat from '../assets/images/cat-1.jpg';
-import { Component } from 'react';
+import { useState } from 'react';
+import { checkPopularityPosts } from 'utils/helpers';
+import { Modal } from './Modal';
 
-const posts = [
-  { id: 1, srcImage: imgCat, title: 'Hello Cat', content: 'testReact1' },
-  { id: 2, srcImage: imgCat, title: 'Hello Dog', content: 'testReact2' },
-  {
-    id: 3,
-    srcImage: imgCat,
-    title: 'Hello Fish',
-    content: 'testReact3',
-    isPopular: true,
-  },
-];
-// export const App = () => {
-//   return (
-//     <>
-//       <h2 className="header-title">Котик на дієті, нещасний котик</h2>
-//       <PostList title="My Post List" list={posts} />
-//     </>
-//   );
-// };
+import React from 'react';
 
-export class App extends Component {
-  state = {
-    posts: [
-      { id: 1, srcImage: imgCat, title: 'Hello Cat', content: 'testReact1' },
-      { id: 2, srcImage: imgCat, title: 'Hello Dog', content: 'testReact2' },
-      {
-        id: 3,
-        srcImage: imgCat,
-        title: 'Hello Fish',
-        content: 'testReact3',
-        isPopular: true,
-      },
-    ],
+export const App = () => {
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      srcImage: imgCat,
+      title: 'Hello Cat',
+      content: 'testReact1',
+      isPopular: false,
+    },
+    {
+      id: 2,
+      srcImage: imgCat,
+      title: 'Hello Dog',
+      content: 'testReact2',
+      isPopular: false,
+    },
+    {
+      id: 3,
+      srcImage: imgCat,
+      title: 'Hello Fish',
+      content: 'testReact3',
+      isPopular: true,
+    },
+  ]);
+  const [filterTerm, setFilterTerm] = useState('');
+  const [modalOpen, setModal] = useState(true);
+
+  const onDeletePost = postId => {
+    setPosts(posts.filter(post => post.id !== postId));
   };
 
-  onDeletePost = postId => {
-    this.setState({
-      posts: this.state.posts.filter(post => post.id !== postId),
-    });
+  const onInputChange = event => {
+    setFilterTerm(event.target.value);
   };
 
-  render() {
-    return (
-      <>
-        <h2 className="header-title">Котик на дієті, нещасний котик</h2>
-        <PostList
-          title="My Post List"
-          list={this.state.posts}
-          onDeletePost={this.onDeletePost}
-        />
-      </>
+  const filteredPosts = posts.filter(post => {
+    const regex = new RegExp(filterTerm.toLocaleLowerCase());
+    return regex.test(post.title.toLocaleLowerCase());
+  });
+
+  const onChangeStatus = postId => {
+    setPosts(
+      posts.map(post => {
+        if (postId === post.id) {
+          return { ...post, isPopular: !post.isPopular };
+        }
+        return post;
+      })
     );
-  }
-}
+  };
+
+  const onCloseModal = () => {
+    setModal(false);
+  };
+
+  const showPromocode = checkPopularityPosts(posts) && modalOpen;
+  return (
+    <>
+      <h2 className="header-title">Котик на дієті, нещасний котик</h2>
+      <input value={filterTerm} type="text" onChange={onInputChange} />
+      {showPromocode && <Modal onCloseModal={onCloseModal} />}
+      <PostList
+        title="My Post List"
+        list={filteredPosts}
+        onDeletePost={onDeletePost}
+        onChangeStatus={onChangeStatus}
+      />
+    </>
+  );
+};

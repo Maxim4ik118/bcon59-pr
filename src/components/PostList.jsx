@@ -1,7 +1,6 @@
-import imgCat from '../assets/images/cat-1.jpg';
 import { PostListItem } from './PostListItem';
 
-const Postlist = ({ title, list, onDeletePost }) => {
+const Postlist = ({ title, list, onDeletePost, onChangeStatus }) => {
   return (
     <div>
       <h2 className="post-list-title">{title}</h2>
@@ -16,20 +15,10 @@ const Postlist = ({ title, list, onDeletePost }) => {
               isPopular={post.isPopular}
               onDeletePost={onDeletePost}
               id={post.id}
+              onChangeStatus={onChangeStatus}
             />
           );
         })}
-        {/* <PostListItem
-          srcImage={imgCat}
-          title={'Image of Cat'}
-          content={'Hello Cat'}
-        />
-        <PostListItem
-          isPopular={true}
-          srcImage={imgCat}
-          title={'Image of Cat Two'}
-          content={'Hello Cat Two'}
-        /> */}
       </ul>
     </div>
   );

@@ -5,6 +5,7 @@ export function PostListItem({
   isPopular = false,
   onDeletePost,
   id,
+  onChangeStatus,
 }) {
   return (
     <li className="post-list-item">
@@ -16,6 +17,9 @@ export function PostListItem({
       <p className="post-list-item-text">{content}</p>
       <button onClick={() => onDeletePost(id)} type="button">
         Click
+      </button>
+      <button onClick={() => onChangeStatus(id)} type="button">
+        Add popular status
       </button>
     </li>
   );
