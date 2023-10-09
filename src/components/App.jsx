@@ -1,5 +1,4 @@
 import PostList from './PostList';
-
 import imgCat from '../assets/images/cat-1.jpg';
 import imgDog from '../assets/images/dog-1.jpg';
 import imgFish from '../assets/images/fish-1.webp';
@@ -70,7 +69,12 @@ export class App extends Component {
   };
 
   onAddPost = formData => {
-    const post = { ...formData, id: Math.random(), srcImage: imgCat, isPopular: false };
+    const post = {
+      ...formData,
+      id: Math.random(),
+      srcImage: imgCat,
+      isPopular: false,
+    };
 
     this.setState({ posts: [...this.state.posts, post] });
   };
@@ -80,27 +84,22 @@ export class App extends Component {
     this.setState({ filter: inputValue });
   };
 
-
-  onOpenModal = (modalData) => {
+  onOpenModal = modalData => {
     this.setState({
       modal: {
         isOpen: true,
-        modalData: modalData
-      }
-    })
-  }
+        modalData: modalData,
+      },
+    });
+  };
   onCloseModal = () => {
     this.setState({
       modal: {
         isOpen: false,
-        modaltData: null
-      }
-    })
-  }
-
-
-
-
+        modaltData: null,
+      },
+    });
+  };
 
   render() {
     const filteredPostsByTitleAndContent = this.state.posts.filter(post => {
@@ -142,17 +141,9 @@ export class App extends Component {
           onOpenModal={this.onOpenModal}
         />
 
-        {
-          this.state.modal.isOpen === true &&
-          <Modal
-            data={'Hello from modal'}
-            onCloseModal={this.onCloseModal}
-          />
-        }
-
-
-
-
+        {this.state.modal.isOpen === true && (
+          <Modal data={'Hello from modal'} onCloseModal={this.onCloseModal} />
+        )}
       </>
     );
   }
