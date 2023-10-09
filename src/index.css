@@ -10,13 +10,14 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, "Consolas", 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, 'Consolas', 'Courier New',
     monospace;
 }
 .header-title {
   font-size: 24px;
   color: brown;
   text-align: center;
+  margin: 0;
 }
 .post-list {
   list-style: none;
@@ -41,11 +42,30 @@ code {
   color: white;
 }
 
-.error-txt{
-padding: 25px;
-background-color: red;
-color: #ffffff;
-font-size: 22px;
-text-align: center;
-font-family: "Helvetica Neue";
+.error-txt {
+  padding: 25px;
+  background-color: red;
+  color: #ffffff;
+  font-size: 22px;
+  text-align: center;
+  font-family: 'Helvetica Neue';
+}
+
+.nav-link {
+  background-color: transparent;
+  color: black;
+  padding: 20px;
+  display: inline-block;
+  border: 1px solid chocolate;
+  border-radius: 15px;
+  text-decoration: none;
+  margin-right: 15px;
+
+  transition: all 0.3s;
+}
+
+.nav-link.active {
+  background-color: black;
+  color: #ffffff;
+  border: 1px solid orange;
 }
