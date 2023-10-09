@@ -1,150 +1,103 @@
 import PostList from './PostList';
-import imgCat from '../assets/images/cat-1.jpg';
-import imgDog from '../assets/images/dog-1.jpg';
-import imgFish from '../assets/images/fish-1.webp';
-import { Component } from 'react';
-import { PostForm } from 'components/PostForm/PostForm';
+// import imgCat from '../assets/images/cat-1.jpg';
+// import imgDog from '../assets/images/dog-1.jpg';
+// import imgFish from '../assets/images/fish-1.webp';
+import { useState, useEffect } from 'react';
+// import { PostForm } from 'components/PostForm/PostForm';
 import { Modal } from './Modal/Modal';
+import { requestPosts } from 'services/api';
+import { ColorRing } from 'react-loader-spinner';
 
-export class App extends Component {
-  state = {
-    filter: '',
-    modal: {
-      isOpen: false,
-      modalData: null,
-    },
-    posts: [
-      {
-        id: 1,
-        srcImage: imgCat,
-        title: 'Cat',
-        content: 'Sad',
-        isPopular: false,
-      },
-      {
-        id: 2,
-        srcImage: imgDog,
-        title: 'Dog',
-        content: 'Happy',
-        isPopular: false,
-      },
-      {
-        id: 3,
-        srcImage: imgFish,
-        title: 'Fish',
-        content: 'Wet',
-        isPopular: true,
-      },
-    ],
-  };
+// {
+//     "userId": 1,
+//     "id": 1,
+//     "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+//     "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+//   },
 
-  componentDidMount() {
-    const stringifiedPosts = localStorage.getItem('keyPost');
-    const parsedPosts = JSON.parse(stringifiedPosts) ?? [];
-    this.setState({ posts: parsedPosts });
-  }
+export function App() {
+  const [filter, setFilter] = useState('');
+  const [modal, setModal] = useState({ isOpen: false, modalData: null });
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  componentDidUpdate(_, prevState) {
-    if (this.state.posts !== prevState.posts) {
-      const stringifiedPosts = JSON.stringify(this.state.posts);
-      localStorage.setItem('keyPost', stringifiedPosts);
-    }
-  }
-
-  onDeletePost = postId => {
-    this.setState({
-      posts: this.state.posts.filter(post => post.id !== postId),
-    });
-  };
-
-  addPopularStatus = postId => {
-    // postId = 2
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: false}]
-    // [{ id: 1, isPopular: false}, {id:2, isPopular: true}]
-    this.setState({
-      posts: this.state.posts.map(post =>
-        postId === post.id ? { ...post, isPopular: !post.isPopular } : post
-      ),
-    });
-  };
-
-  onAddPost = formData => {
-    const post = {
-      ...formData,
-      id: Math.random(),
-      srcImage: imgCat,
-      isPopular: false,
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setIsLoading(true);
+        const postsData = await requestPosts();
+        setPosts(postsData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    this.setState({ posts: [...this.state.posts, post] });
+    fetchPost();
+  }, []);
+
+  const onDeletePost = postId => {
+    setPosts(posts.filter(post => post.id !== postId));
   };
 
-  onFilterChange = event => {
+  const onFilterChange = event => {
     const inputValue = event.target.value;
-    this.setState({ filter: inputValue });
+    setFilter(inputValue);
   };
 
-  onOpenModal = modalData => {
-    this.setState({
-      modal: {
-        isOpen: true,
-        modalData: modalData,
-      },
-    });
-  };
-  onCloseModal = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-        modaltData: null,
-      },
+  const onOpenModal = modalData => {
+    setModal({
+      isOpen: true,
+      modalData: modalData,
     });
   };
 
-  render() {
-    const filteredPostsByTitleAndContent = this.state.posts.filter(post => {
-      return (
-        post.title
-          .toLowerCase()
-          .includes(this.state.filter.trim().toLowerCase()) ||
-        post.content
-          .toLowerCase()
-          .includes(this.state.filter.trim().toLowerCase())
-      );
+  const onCloseModal = () => {
+    setModal({
+      isOpen: false,
+      modalData: null,
     });
-    const sortedFilteredPosts = [...filteredPostsByTitleAndContent].sort(
-      (a, b) => {
-        return Number(b.isPopular) - Number(a.isPopular);
-      }
-    );
-    return (
-      <>
-        <h2 className="header-title">Котик на дієті, нещасний котик</h2>
-        <PostForm title="Form post" onAddPost={this.onAddPost} />
-        <div className="input-wrapper">
-          <p>Find post by title or content</p>
-          <input
-            onChange={this.onFilterChange}
-            value={this.state.filter}
-            type="text"
-          />
-        </div>
-        {/* {this.state.posts.length === 0 ? (
+  };
+
+  const filteredPostsByTitleAndContent = posts.filter(post => {
+    return post.title.toLowerCase().includes(filter.trim().toLowerCase());
+  });
+
+  return (
+    <>
+      <h2 className="header-title">Котик на дієті, нещасний котик</h2>
+      {/* <PostForm title="Form post" onAddPost={onAddPost} /> */}
+      <div className="input-wrapper">
+        <p>Find post by title or content</p>
+        <input onChange={onFilterChange} value={filter} type="text" />
+      </div>
+      {/* {this.state.posts.length === 0 ? (
           <p>There are no added posts yet</p>
         ) : null} */}
-        <PostList
-          title="My Post List"
-          list={sortedFilteredPosts}
-          filter={this.state.filter}
-          onDeletePost={this.onDeletePost}
-          addPopularStatus={this.addPopularStatus}
-          onOpenModal={this.onOpenModal}
+      {isLoading ? (
+        <ColorRing
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="blocks-loading"
+          wrapperStyle={{}}
+          wrapperClass="blocks-wrapper"
+          colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
         />
-
-        {this.state.modal.isOpen === true && (
-          <Modal data={'Hello from modal'} onCloseModal={this.onCloseModal} />
-        )}
-      </>
-    );
-  }
+      ) : null}
+      {error ? <p className="error-txt">Error: {error}</p> : null}
+      <PostList
+        title="My Post List"
+        list={filteredPostsByTitleAndContent}
+        filter={filter}
+        onDeletePost={onDeletePost}
+        onOpenModal={onOpenModal}
+      />
+      {modal.isOpen === true && (
+        <Modal data={'Hello from modal'} onCloseModal={onCloseModal} />
+      )}
+    </>
+  );
 }
